@@ -14,46 +14,40 @@ public class EchoClient {
     			} else {
       				server = args[0];
     			}
-		System.out.print(" Staring client with destination "+ server+":"+portNumber);	
-		try{
-
-			System.out.println("About to enter client loop");
-			run_client(server, portNumber);
-		}
+		try{		
+			//Start listening to the specified port
+			Socket socket = new Socket(server,portNumber);
+			//setup streams				
+			InputStream input = socket.getInputStream();
+			OutputStream output = socket.getOutputStream();
+			//start a while loop,
+			boolean cont = true;
+			int present_byte;
+			int result_byte;
+			while (cont){
+				//get input from stdin, as ints
+				present_byte = System.in.read();
+				//if it's not -1, send them to the server
+				if (present_byte != -1){
+					output.write(present_byte);
+					//read and dump the servers response
+					result_byte = input.read();
+					System.out.write(result_byte);
+				} else {
+					//break out of the loop
+					cont = false;
+					output.flush();
+					input.close();
+					output.close();
+					System.out.flush();
+				}
+			}	
+				//loop
+		}	
 		catch (IOException e) {
 		System.err.println(e);
 		}
 	}
-
-	void run_client(String server, int portNumber) throws IOException{
-	
-	//Start listening to the specified port
-	Socket socket = new Socket(server,portNumber);
-
-	//setup streams
-	InputStream input = socket.getInputStream();
-	OutputStream output = socket.getOutputStream();
-	
-
-	//start a while loop,
-	bool cont = true;
-	int present_byte;
-	int result_byte;
-	//get input from stdin, as ints
-	present_byte = System.in.read();
-	//if it's not -1, send them to the server
-	if (present_byte != -1){
-		OutputStream.write(present_byte);
-		//read and dump the servers response
-		result_byte = Inputstream.read();
-		System.out.write(result_byte);
-	} else {
-		//break out of the loop
-		cont = false;
-		output.flush();
-		input.close();
-		output.close();
-	}	
-	//loop
-	}
 }
+
+
